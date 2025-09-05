@@ -31,13 +31,9 @@ jobs:
       - name: Increment Android Version Code
         run: |
           cd android/app
-          # Read current versionCode from build.gradle
           CURRENT_CODE=$(grep "versionCode" build.gradle | awk '{print $2}')
-          # Increment versionCode
           NEW_CODE=$((CURRENT_CODE + 1))
-          # Replace versionCode in build.gradle
           sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" build.gradle
-          # Optional: increment versionName automatically
           CURRENT_NAME=$(grep "versionName" build.gradle | awk '{print $2}' | tr -d '"')
           NEW_NAME="$CURRENT_NAME.$NEW_CODE"
           sed -i "s/versionName \"$CURRENT_NAME\"/versionName \"$NEW_NAME\"/" build.gradle
@@ -55,6 +51,6 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase appdistribution:distribute android/app/build/outputs/apk/release/app-release.apk \
-            --app 1:573444890942:android:b7447b8fd40a0cec09cc6f \
-            --groups testers
+          firebase appdistribution:distribute "android/app/build/outputs/apk/release/app-release.apk" \
+            --app 1:573444890942:android:ef53f7f2b374859909cc6f \
+            --groups tester

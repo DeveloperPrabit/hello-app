@@ -1,17 +1,14 @@
-// App.tsx
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import Dashboard from './src/auth/Test';
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  if (loggedIn) {
+    return <Dashboard />;
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -19,45 +16,23 @@ const App = () => {
         <Text style={styles.title}>{isLogin ? 'Login' : 'Sign Up'}</Text>
 
         {!isLogin && (
-          <TextInput
-            style={styles.input}
-            placeholder="Full Name"
-            placeholderTextColor="#999"
-          />
+          <TextInput style={styles.input} placeholder="Full Name" placeholderTextColor="#999" />
         )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#999"
-          keyboardType="email-address"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#999"
-          secureTextEntry
-        />
+        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#999" keyboardType="email-address" />
+        <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#999" secureTextEntry />
 
         {!isLogin && (
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor="#999"
-            secureTextEntry
-          />
+          <TextInput style={styles.input} placeholder="Confirm Password" placeholderTextColor="#999" secureTextEntry />
         )}
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => setLoggedIn(true)}>
           <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Sign Up'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
           <Text style={styles.toggleText}>
-            {isLogin
-              ? "Don't have an account? Sign Up"
-              : 'Already have an account? Login'}
+            {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Login'}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -68,46 +43,45 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#f5f5f5',
   },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 30,
+    textAlign: 'center',
   },
   input: {
-    width: '100%',
     height: 50,
-    borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
+    borderWidth: 1,
+    borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
     backgroundColor: '#fff',
   },
   button: {
-    width: '100%',
     height: 50,
-    backgroundColor: '#007bff',
-    borderRadius: 10,
+    backgroundColor: '#007AFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 15,
+    borderRadius: 8,
+    marginVertical: 10,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   toggleText: {
-    color: '#007bff',
-    fontSize: 16,
+    textAlign: 'center',
+    color: '#007AFF',
+    marginTop: 10,
   },
 });
 

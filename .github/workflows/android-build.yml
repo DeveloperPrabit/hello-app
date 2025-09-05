@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build & Distribute Android APK
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build APK
+    name: Build APK and Distribute
     runs-on: ubuntu-latest
 
     steps:
@@ -28,16 +28,33 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Increment Android Version Code
+        run: |
+          cd android/app
+          # Read current versionCode from build.gradle
+          CURRENT_CODE=$(grep "versionCode" build.gradle | awk '{print $2}')
+          # Increment versionCode
+          NEW_CODE=$((CURRENT_CODE + 1))
+          # Replace versionCode in build.gradle
+          sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" build.gradle
+          # Optional: increment versionName automatically
+          CURRENT_NAME=$(grep "versionName" build.gradle | awk '{print $2}' | tr -d '"')
+          NEW_NAME="$CURRENT_NAME.$NEW_CODE"
+          sed -i "s/versionName \"$CURRENT_NAME\"/versionName \"$NEW_NAME\"/" build.gradle
+          echo "New versionCode: $NEW_CODE, versionName: $NEW_NAME"
+
       - name: Build APK
         run: |
           cd android
           ./gradlew assembleRelease
 
-      - name: Upload APK as release asset
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: Hello-App-${{ github.run_number }}
-          name: app-release.apk
-          files: android/app/build/outputs/apk/release/app-release.apk
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Distribute APK via Firebase
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase appdistribution:distribute android/app/build/outputs/apk/release/app-release.apk \
+            --app 1:573444890942:android:b7447b8fd40a0cec09cc6f \
+            --groups testers
